@@ -2,7 +2,7 @@
 https://huggingface.co/keras-io/denoising-diffusion-implicit-models
 
 ### Zero-Shot Image Restoration Using Denoising Diffusion Null-Space Model
-#### YinhuaiWang, JiwenYu1,JianZhang
+#### YinhuaiWang, JiwenYu,JianZhang
 https://github.com/wyhuai/ddnm
 
 ### KBNet: Kernel Basis Network for Image Restoration
