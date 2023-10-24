@@ -3,3 +3,5 @@ keras==2.4.3
 fawkes
 pandas
 tqdm
+torch
+matplotlib

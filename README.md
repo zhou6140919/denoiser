@@ -32,6 +32,22 @@
     ```bash
     bash ./split.sh
     ```
+6. Use `Fawkes` to cloak images.
+    About 40 hrs.
+    ```bash
+    python ./fawkes.py
+    ```
+7. Deal with images.
+    ```bash
+    python ./prepare_for_train_denoiser.py
+    ```
+    Train: 17878
+    Dev: 2216
+    Test: 2581
+8. Start training.
+    ```bash
+    bash ./train.sh
+    ```
 
 
 ## Updates
@@ -39,3 +55,4 @@
 - 09/08/2023 Project started.
 - 09/26/2023 Download datasets.
 - 10/20/2023 Preprocessing.
+- 10/23/2023 Training.
