@@ -1,39 +1,5 @@
-import torch
+import torch.nn.functional as F
 import torch.nn as nn
-
-
-class DenoiseCNN(nn.Module):
-    def __init__(self):
-        super(DenoiseCNN, self).__init__()
-
-        # Encoder
-        # Single channel (grayscale), 64 filters, 3x3 kernels
-        self.enc1 = nn.Conv2d(1, 64, kernel_size=3, padding=1)
-        self.enc2 = nn.Conv2d(64, 32, kernel_size=3, padding=1)
-        self.enc3 = nn.Conv2d(32, 16, kernel_size=3, padding=1)
-
-        # Decoder
-        self.dec1 = nn.Conv2d(16, 32, kernel_size=3, padding=1)
-        self.dec2 = nn.Conv2d(32, 64, kernel_size=3, padding=1)
-        # Output single channel (grayscale)
-        self.dec3 = nn.Conv2d(64, 1, kernel_size=3, padding=1)
-
-        # Activation function
-        self.act = nn.ReLU()
-
-    def forward(self, x):
-        # Encoder
-        x = self.act(self.enc1(x))
-        x = self.act(self.enc2(x))
-        x = self.act(self.enc3(x))
-
-        # Decoder
-        x = self.act(self.dec1(x))
-        x = self.act(self.dec2(x))
-        # Sigmoid activation to ensure output is between 0 and 1
-        x = torch.sigmoid(self.dec3(x))
-
-        return x
 
 
 class DnCNN(nn.Module):
@@ -60,3 +26,37 @@ class DnCNN(nn.Module):
     def forward(self, x):
         out = self.dncnn(x)
         return out
+
+
+class FaceRecognitionModel(nn.Module):
+    def __init__(self, num_classes):
+        super(FaceRecognitionModel, self).__init__()
+        # Convolutional layers
+        self.conv1 = nn.Conv2d(3, 32, kernel_size=3, stride=1, padding=1)
+        self.conv2 = nn.Conv2d(32, 64, kernel_size=3, stride=1, padding=1)
+        self.conv3 = nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1)
+        self.conv4 = nn.Conv2d(128, 256, kernel_size=3, stride=1, padding=1)
+
+        # Fully connected layers
+        # The input image is downsampled to 16x16 after pooling layers
+        self.fc1 = nn.Linear(256 * 16 * 16, 512)
+        self.fc2 = nn.Linear(512, num_classes)
+
+    def forward(self, x):
+        x = F.relu(self.conv1(x))
+        x = F.max_pool2d(x, 2)
+
+        x = F.relu(self.conv2(x))
+        x = F.max_pool2d(x, 2)
+
+        x = F.relu(self.conv3(x))
+        x = F.max_pool2d(x, 2)
+
+        x = F.relu(self.conv4(x))
+        x = F.max_pool2d(x, 2)
+
+        x = x.view(x.size(0), -1)  # Flatten the tensor
+        x = F.relu(self.fc1(x))
+        x = self.fc2(x)
+
+        return x
